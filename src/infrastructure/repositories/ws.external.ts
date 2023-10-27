@@ -1,16 +1,6 @@
-import { Client, LocalAuth, LegacySessionAuth } from "whatsapp-web.js";
+import { Client, LocalAuth } from "whatsapp-web.js";
 import { image as imageQr } from "qr-image";
 import LeadExternal from "../../domain/lead-external.repository";
-import fs from "fs";
-
-// Path where the session data will be stored
-const SESSION_FILE_PATH = "./session.json";
-
-// Load the session data if it has been previously saved
-let sessionData: any;
-if (fs.existsSync(SESSION_FILE_PATH)) {
-  sessionData = require(SESSION_FILE_PATH);
-}
 const qrcode = require("qrcode-terminal");
 /**
  * Extendemos los super poderes de whatsapp-web
@@ -20,11 +10,7 @@ class WsTransporter extends Client implements LeadExternal {
 
   constructor() {
     super({
-      // authStrategy: new LocalAuth(),
-      authStrategy: new LegacySessionAuth({
-        session: sessionData,
-      }),
-
+      authStrategy: new LocalAuth(),
       puppeteer: {
         headless: true,
         args: [
@@ -43,14 +29,7 @@ class WsTransporter extends Client implements LeadExternal {
       this.status = true;
       console.log("LOGIN_SUCCESS");
     });
-    // this.on("authenticated", (session) => {
-    //   sessionData = session;
-    //   fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), (err) => {
-    //     if (err) {
-    //       console.error(err);
-    //     }
-    //   });
-    // });
+
     this.on("auth_failure", () => {
       this.status = false;
       console.log("LOGIN_FAIL");
