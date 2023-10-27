@@ -1,7 +1,19 @@
-import { Client, LocalAuth } from "whatsapp-web.js";
+import {
+  Client,
+  LocalAuth,
+  LegacySessionAuth,
+  ClientSession,
+} from "whatsapp-web.js";
 import { image as imageQr } from "qr-image";
 import LeadExternal from "../../domain/lead-external.repository";
 const qrcode = require("qrcode-terminal");
+import fs from "fs";
+
+const SESSION_FILE_PATH = "./session.json";
+let sessionCfg: ClientSession | undefined;
+if (fs.existsSync(SESSION_FILE_PATH)) {
+  sessionCfg = require(SESSION_FILE_PATH);
+}
 /**
  * Extendemos los super poderes de whatsapp-web
  */
@@ -10,7 +22,11 @@ class WsTransporter extends Client implements LeadExternal {
 
   constructor() {
     super({
-      authStrategy: new LocalAuth(),
+      // authStrategy: new LocalAuth(),
+      authStrategy: new LegacySessionAuth({
+        restartOnAuthFail: true,
+        session: sessionCfg,
+      }),
       puppeteer: {
         headless: true,
         args: [
@@ -39,6 +55,16 @@ class WsTransporter extends Client implements LeadExternal {
       console.log("Escanea el codigo QR que esta en la carepta tmp");
       this.generateImage(qr);
     });
+
+    this.on("authenticated", (session) => {
+      console.log("AUTHENTICATED", session);
+      sessionCfg = session;
+      fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function (err) {
+        if (err) {
+          console.error(err);
+        }
+      });
+    });
   }
 
   /**
@@ -65,8 +91,6 @@ class WsTransporter extends Client implements LeadExternal {
     const path = `${process.cwd()}/tmp`;
     let qr_svg = imageQr(base64, { type: "svg", margin: 4 });
     qr_svg.pipe(require("fs").createWriteStream(`${path}/qr.svg`));
-    console.log(`⚡ Recuerda que el QR se actualiza cada minuto ⚡'`);
-    console.log(`⚡ Actualiza F5 el navegador para mantener el mejor QR⚡`);
     // qrcode.generate(base64, { small: false });
   };
 }
