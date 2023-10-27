@@ -1,19 +1,11 @@
-import {
-  Client,
-  LocalAuth,
-  LegacySessionAuth,
-  ClientSession,
-} from "whatsapp-web.js";
+import { Client, LocalAuth } from "whatsapp-web.js";
 import { image as imageQr } from "qr-image";
 import LeadExternal from "../../domain/lead-external.repository";
-const qrcode = require("qrcode-terminal");
-import fs from "fs";
 
-const SESSION_FILE_PATH = "./session.json";
-let sessionCfg: ClientSession | undefined;
-if (fs.existsSync(SESSION_FILE_PATH)) {
-  sessionCfg = require(SESSION_FILE_PATH);
-}
+// Path where the session data will be stored
+
+const qrcode = require("qrcode-terminal");
+
 /**
  * Extendemos los super poderes de whatsapp-web
  */
@@ -23,7 +15,6 @@ class WsTransporter extends Client implements LeadExternal {
   constructor() {
     super({
       authStrategy: new LocalAuth(),
-
       puppeteer: {
         headless: true,
         args: [
@@ -42,7 +33,14 @@ class WsTransporter extends Client implements LeadExternal {
       this.status = true;
       console.log("LOGIN_SUCCESS");
     });
-
+    // this.on("authenticated", (session) => {
+    //   sessionData = session;
+    //   fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), (err) => {
+    //     if (err) {
+    //       console.error(err);
+    //     }
+    //   });
+    // });
     this.on("auth_failure", () => {
       this.status = false;
       console.log("LOGIN_FAIL");
@@ -51,16 +49,6 @@ class WsTransporter extends Client implements LeadExternal {
     this.on("qr", (qr) => {
       console.log("Escanea el codigo QR que esta en la carepta tmp");
       this.generateImage(qr);
-    });
-
-    this.on("authenticated", (session) => {
-      console.log("AUTHENTICATED", session);
-      sessionCfg = session;
-      fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function (err) {
-        if (err) {
-          console.error(err);
-        }
-      });
     });
   }
 
