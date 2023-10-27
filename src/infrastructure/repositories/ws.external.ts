@@ -43,14 +43,14 @@ class WsTransporter extends Client implements LeadExternal {
       this.status = true;
       console.log("LOGIN_SUCCESS");
     });
-    this.on("authenticated", (session) => {
-      sessionData = session;
-      fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), (err) => {
-        if (err) {
-          console.error(err);
-        }
-      });
-    });
+    // this.on("authenticated", (session) => {
+    //   sessionData = session;
+    //   fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), (err) => {
+    //     if (err) {
+    //       console.error(err);
+    //     }
+    //   });
+    // });
     this.on("auth_failure", () => {
       this.status = false;
       console.log("LOGIN_FAIL");
