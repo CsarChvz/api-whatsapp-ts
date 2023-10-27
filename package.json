@@ -7,8 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/app.ts",
     "start": "node ./dist/app.js",
-    "build": "tsc -p  . && npm run start",
-    "deploy": "npm run build && npm run start"
+    "build": "tsc -p  ."
   },
   "keywords": [],
   "author": "",
