@@ -11,7 +11,10 @@ class WsTransporter extends Client implements LeadExternal {
   constructor() {
     super({
       authStrategy: new LocalAuth(),
-
+      puppeteer: {
+        headless: false,
+        args: ["--disable-setuid-sandbox", "--unhandled-rejections=strict"],
+      },
     });
 
     console.log("Iniciando....");
