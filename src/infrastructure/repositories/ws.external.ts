@@ -33,14 +33,7 @@ class WsTransporter extends Client implements LeadExternal {
       this.status = true;
       console.log("LOGIN_SUCCESS");
     });
-    // this.on("authenticated", (session) => {
-    //   sessionData = session;
-    //   fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), (err) => {
-    //     if (err) {
-    //       console.error(err);
-    //     }
-    //   });
-    // });
+
     this.on("auth_failure", () => {
       this.status = false;
       console.log("LOGIN_FAIL");
@@ -73,8 +66,8 @@ class WsTransporter extends Client implements LeadExternal {
   }
 
   private generateImage = (base64: string) => {
-    // const path = `${process.cwd()}/tmp`;
-    const path = `/tmp`;
+    const path = `${process.cwd()}/tmp`;
+    // const path = `/tmp`;
     let qr_svg = imageQr(base64, { type: "svg", margin: 4 });
     qr_svg.pipe(require("fs").createWriteStream(`${path}/qr.svg`));
     // qrcode.generate(base64, { small: false });
