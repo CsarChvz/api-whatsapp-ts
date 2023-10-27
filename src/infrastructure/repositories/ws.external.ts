@@ -4,7 +4,7 @@ import LeadExternal from "../../domain/lead-external.repository";
 
 // Path where the session data will be stored
 
-const qrcode = require("qrcode-terminal");
+// const qrcode = require("qrcode-terminal");
 
 /**
  * Extendemos los super poderes de whatsapp-web
