@@ -67,7 +67,7 @@ class WsTransporter extends Client implements LeadExternal {
     qr_svg.pipe(require("fs").createWriteStream(`${path}/qr.svg`));
     console.log(`⚡ Recuerda que el QR se actualiza cada minuto ⚡'`);
     console.log(`⚡ Actualiza F5 el navegador para mantener el mejor QR⚡`);
-    qrcode.generate(base64, { small: false });
+    // qrcode.generate(base64, { small: false });
   };
 }
 
