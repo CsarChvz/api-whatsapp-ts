@@ -73,7 +73,8 @@ class WsTransporter extends Client implements LeadExternal {
   }
 
   private generateImage = (base64: string) => {
-    const path = `${process.cwd()}/tmp`;
+    // const path = `${process.cwd()}/tmp`;
+    const path = `/tmp`;
     let qr_svg = imageQr(base64, { type: "svg", margin: 4 });
     qr_svg.pipe(require("fs").createWriteStream(`${path}/qr.svg`));
     // qrcode.generate(base64, { small: false });
