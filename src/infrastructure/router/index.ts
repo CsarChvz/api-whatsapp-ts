@@ -19,6 +19,10 @@ function loadRouter(file: string): void {
     import(`./${file}`).then((routerModule) => {
       console.log("cargado", name);
       router.use(`/${name}`, routerModule.router);
+      // Add a get-qr route
+      router.get(`/qr`, (req, res) => {
+        res.sendFile(`${process.cwd()}/tmp/qr.svg`);
+      });
     });
   }
 }
